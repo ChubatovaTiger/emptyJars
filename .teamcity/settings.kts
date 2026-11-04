@@ -1,4 +1,5 @@
 import jetbrains.buildServer.configs.kotlin.*
+import com.example.ciutils.BuildDefaults
 
 /*
 The settings script is an entry point for defining a TeamCity
@@ -31,6 +32,14 @@ project {
 
 object Build1 : BuildType({
     name = "Build1"
+
+    // Real use of the library shipped in .teamcity/.lib/ciutils-1.0.jar.
+    // If that jar (or any other jar in .lib/) is empty/corrupted, the whole
+    // Kotlin DSL generation aborts with java.util.zip.ZipException (TW-105472).
+    params {
+        param("ci.build.label", BuildDefaults.buildLabel("Project5"))
+        param("ci.timeout.minutes", BuildDefaults.DEFAULT_TIMEOUT_MINUTES.toString())
+    }
 
     vcs {
         root(DslContext.settingsRoot)
